@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fermentation-station-agent-integ-tests-v2
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/lukasb27/fermentation-station-agent.git
+    targetRevision: integ-tests-v2
+    path: k8s
+    kustomize:
+      images:
+        - lukasball/fermentation-station-agent=lukasball/fermentation-station-agent:integ-tests-v2
+      commonAnnotations:
+        prNumber: "20"
+        sha: fb30d0c64b7ffb2b4e9bd97010502575b0d45b5e
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: integ-tests-v2
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
